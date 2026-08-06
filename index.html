@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Voyage intérieur - Ornella</title>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+
+body{
+
+margin:0;
+min-height:100vh;
+
+background:
+linear-gradient(135deg,#dfffe2,#b7f5c0,#ffffff);
+
+font-family:Poppins,sans-serif;
+
+color:#244b32;
+
+}
+
+
+
+.container{
+
+max-width:800px;
+margin:auto;
+padding:30px;
+
+}
+
+
+
+.card{
+
+background:rgba(255,255,255,0.55);
+
+backdrop-filter:blur(20px);
+
+border-radius:40px;
+
+padding:40px;
+
+box-shadow:
+0 20px 60px rgba(0,0,0,.15);
+
+text-align:center;
+
+}
+
+
+
+h1,h2{
+
+font-family:"Great Vibes",cursive;
+
+color:#26734d;
+
+}
+
+
+h1{
+
+font-size:75px;
+
+}
+
+
+
+h2{
+
+font-size:55px;
+
+}
+
+
+
+p{
+
+line-height:1.8;
+
+}
+
+
+
+button{
+
+background:#26734d;
+
+color:white;
+
+border:none;
+
+padding:15px 40px;
+
+border-radius:50px;
+
+font-size:18px;
+
+cursor:pointer;
+
+transition:.4s;
+
+}
+
+
+button:hover{
+
+transform:scale(1.1);
+
+}
+
+
+
+
+.hidden{
+
+display:none;
+
+}
+
+
+
+
+/* LETTRE */
+
+
+#letter{
+
+margin-top:30px;
+
+cursor:pointer;
+
+}
+
+
+
+.envelope{
+
+font-size:180px;
+
+animation:float 2s infinite;
+
+}
+
+
+
+@keyframes float{
+
+50%{
+
+transform:translateY(-20px);
+
+}
+
+}
+
+
+
+
+.open{
+
+animation:openLetter 2s forwards;
+
+}
+
+
+
+@keyframes openLetter{
+
+
+50%{
+
+transform:rotateY(180deg) scale(1.5);
+
+filter:drop-shadow(0 0 50px #fff);
+
+}
+
+
+100%{
+
+transform:scale(2);
+
+opacity:0;
+
+}
+
+
+}
+
+
+
+
+
+
+
+/* QUESTIONS */
+
+
+.question{
+
+font-size:24px;
+
+margin-bottom:30px;
+
+font-weight:600;
+
+}
+
+
+
+textarea{
+
+width:100%;
+
+height:150px;
+
+border-radius:25px;
+
+border:none;
+
+padding:20px;
+
+font-size:16px;
+
+}
+
+
+
+.progress{
+
+height:12px;
+
+background:#ddd;
+
+border-radius:20px;
+
+margin-bottom:30px;
+
+}
+
+
+
+.progress div{
+
+height:100%;
+
+width:0%;
+
+background:#26734d;
+
+border-radius:20px;
+
+transition:.5s;
+
+}
+
+
+
+.magic{
+
+position:fixed;
+
+inset:0;
+
+background:
+radial-gradient(circle,#fff,#caffd1,#4caf72);
+
+z-index:20;
+
+animation:magic 3s forwards;
+
+}
+
+
+
+@keyframes magic{
+
+from{
+
+opacity:0;
+
+}
+
+to{
+
+opacity:1;
+
+}
+
+}
+
+
+
+
+</style>
+
+</head>
+
+
+
+
+<body>
+
+
+
+<audio id="music">
+
+<source src="musique.mp3.m4a">
+
+</audio>
+
+
+
+<div class="container">
+
+
+
+<div class="card" id="welcome">
+
+
+<h1>Bienvenue Ornella</h1>
+
+
+<p>
+
+Bienvenue dans ton voyage intérieur.
+
+Cet espace est un endroit où tes pensées,
+tes émotions et ton histoire peuvent être entendues.
+
+</p>
+
+
+<p>
+
+Ce questionnaire est créé pour découvrir
+ce qui se cache derrière tes sourires :
+tes rêves, tes blessures, tes peurs,
+tes expériences et tes sentiments.
+
+</p>
+
+
+<p>
+
+N'oublie jamais :
+ta beauté existe dans ton apparence,
+mais aussi dans ton cœur, ta sensibilité
+et la personne unique que tu es.
+
+</p>
+
+
+
+<p>
+
+Pour commencer ce voyage,
+ouvre la lettre.
+
+</p>
+
+
+
+<div id="letter" onclick="ouvrir()">
+
+<div class="envelope">
+
+💌
+
+</div>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card hidden" id="quiz">
+
+
+<h2>Ton histoire</h2>
+
+
+<div class="progress">
+
+<div id="bar"></div>
+
+</div>
+
+
+
+<form id="form">
+
+
+<div id="questionBox"></div>
+
+
+<button type="button" onclick="nextQuestion()">
+
+Continuer
+
+</button>
+
+
+</form>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card hidden" id="final">
+
+
+<h2>Merci Ornella ❤️</h2>
+
+
+<p id="analyse"></p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<script>
+
+
+const questions=[
+
+
+"Quelle est ta plus belle histoire d'amour ?",
+
+
+"Quelle déception t'a le plus marquée ?",
+
+
+"Quelle blessure caches-tu souvent ?",
+
+
+"Quelle est ta plus grande peur ?",
+
+
+"As-tu déjà été trahie par quelqu'un ?",
+
+
+"Quel souvenir te fait encore mal ?",
+
+
+"Quelle personne a changé ta vie ?",
+
+
+"Quelle critique ou moquerie t'a blessée ?",
+
+
+"As-tu déjà fait semblant d'aller bien ?",
+
+
+"Quel est ton plus grand rêve ?",
+
+
+"Quelle erreur t'a appris une leçon ?",
+
+
+"Qu'est-ce qui te rend heureuse ?",
+
+
+"Qu'est-ce qui te fait perdre confiance ?",
+
+
+"Quelle qualité vois-tu en toi ?",
+
+
+"Quelle faiblesse aimerais-tu changer ?",
+
+
+"Quelle relation t'a appris quelque chose ?",
+
+
+"Qu'est-ce que tu as du mal à pardonner ?",
+
+
+"Quand te sens-tu seule ?",
+
+
+"Quelle émotion ressens-tu souvent ?",
+
+
+"Qu'aimerais-tu que les autres comprennent ?",
+
+
+"De quoi es-tu fière ?",
+
+
+"Quel échec t'a rendu plus forte ?",
+
+
+"Quelle peur veux-tu dépasser ?",
+
+
+"Que recherches-tu vraiment dans l'amour ?",
+
+
+"Exprime librement ta situation actuelle et tout ce que ton cœur veut dire."
+
+
+];
+
+
+
+let index=0;
+
+let answers=[];
+
+
+
+function ouvrir(){
+
+
+document.getElementById("music").play();
+
+
+document.querySelector(".envelope")
+.classList.add("open");
+
+
+
+let magic=document.createElement("div");
+
+magic.className="magic";
+
+document.body.appendChild(magic);
+
+
+
+setTimeout(()=>{
+
+
+magic.remove();
+
+
+document.getElementById("welcome")
+.classList.add("hidden");
+
+
+document.getElementById("quiz")
+.classList.remove("hidden");
+
+
+showQuestion();
+
+
+},2500);
+
+
+
+}
+
+
+
+
+
+function showQuestion(){
+
+
+document.getElementById("questionBox").innerHTML=
+
+`
+
+<div class="question">
+
+${index+1}/25<br><br>
+
+${questions[index]}
+
+</div>
+
+<textarea id="answer"></textarea>
+
+`;
+
+
+
+document.getElementById("bar").style.width=
+
+((index)/25*100)+"%";
+
+}
+
+
+
+
+
+function nextQuestion(){
+
+
+let answer=document.getElementById("answer").value;
+
+
+answers.push(answer);
+
+
+
+if(index<questions.length-1){
+
+index++;
+
+showQuestion();
+
+
+}
+
+else{
+
+
+send();
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+function send(){
+
+
+fetch(
+"https://formspree.io/f/xpqvkbyb",
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+Ornella:answers
+
+})
+
+}
+
+);
+
+
+
+document.getElementById("quiz")
+.classList.add("hidden");
+
+
+document.getElementById("final")
+.classList.remove("hidden");
+
+
+
+let texte=answers.join(" ").toLowerCase();
+
+
+
+let emoji="🌿";
+
+let msg="Ton histoire montre une belle sensibilité et une grande profondeur.";
+
+
+
+if(texte.includes("triste")||texte.includes("douleur")){
+
+emoji="💔";
+
+msg="Certaines blessures semblent encore présentes. Mais le fait de t'exprimer montre une grande force intérieure.";
+
+}
+
+
+document.getElementById("analyse").innerHTML=
+
+emoji+"<br><br>"+msg+
+
+"<br><br>Merci d'avoir ouvert ton cœur. Tu mérites de la douceur, du respect et de belles choses.";
+
+}
+
+
+
+
+</script>
+
+
+</body>
+
+</html>
